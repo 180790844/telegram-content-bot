@@ -1,4 +1,4 @@
-constconst { Telegraf } = require('telegraf');
+ constconst { Telegraf } = require('telegraf');
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8607525386:AAHDISsEKlGkUCOS1O9InFu2eOpVak-NOtY';
 
