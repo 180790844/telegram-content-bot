@@ -1,13 +1,9 @@
 const { Telegraf } = require('telegraf');
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 
-if (!BOT_TOKEN) {
-  throw new Error('TELEGRAM_BOT_TOKEN environment variable is not set');
-}
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8607525386:AAHDISsEKlGkUCOS1O9InFu2eOpVak-NOtY';
 
 const bot = new Telegraf(BOT_TOKEN);
 
-const userPreferences = new Map();
 const contentDrafts = [];
 
 function generateContentIdeas(keyword) {
@@ -45,7 +41,7 @@ bot.on('message', async (ctx) => {
   }
   
   if (text.includes('帮我写')) {
-    const keyword = text.replace('帮我() || '科技写','').trim';
+    const keyword = text.replace('帮我写','').trim() || '科技';
     await ctx.reply('🎬 正在生成...');
     const ideas = generateContentIdeas(keyword);
     await ctx.reply(`✅ <b>5个脚本idea：</b>\n\n${ideas}`);
@@ -53,7 +49,11 @@ bot.on('message', async (ctx) => {
   }
   
   if (text.includes('草稿')) {
-    await ctx.reply('📋 暂无待审核内容');
+    if (contentDrafts.length === 0) {
+      await ctx.reply('📋 暂无待审核内容');
+    } else {
+      await ctx.reply(`📋 有 ${contentDrafts.length} 条待审核内容`);
+    }
     return;
   }
   
@@ -62,7 +62,14 @@ bot.on('message', async (ctx) => {
 
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
-    try { await bot.handleUpdate(req.body); res.status(200).json({ok:true}); }
-    catch(e) { res.status(500).json({error:e.message}); }
-  } else { res.status(200).json({status:'Bot running!'}); }
+    try {
+      await bot.handleUpdate(req.body);
+      res.status(200).json({ok:true});
+    } catch(e) {
+      console.error('Error:', e.message);
+      res.status(200).json({ok:true});
+    }
+  } else {
+    res.status(200).json({status:'Bot running!'});
+  }
 };
