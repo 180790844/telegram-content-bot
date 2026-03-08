@@ -1,6 +1,9 @@
 const { Telegraf } = require('telegraf');
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8607525386:AAHDISsEKlGkUCOS1O9InFu2eOpVak-NOtY';
+if (!BOT_TOKEN) {
+  throw new Error('TELEGRAM_BOT_TOKEN environment variable is not set');
+}
 
 const bot = new Telegraf(BOT_TOKEN);
 
